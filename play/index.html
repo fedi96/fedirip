@@ -28,15 +28,109 @@
 	<meta property="og:url" content="https://taptaptap.click/" />
 	<meta property="og:image" content="https://taptaptap.click/images/im-og_image.png" />
 
-	<!-- Global site tag (gtag.js) - Google Analytics -->
-	<script async src="https://www.googletagmanager.com/gtag/js?id=UA-3416596-20"></script>
-	<script>
-		window.dataLayer = window.dataLayer || [];
-		function gtag(){dataLayer.push(arguments);}
-		gtag('js', new Date());
+  <script type="text/javascript">
 
-		gtag('config', 'UA-3416596-20');
-	</script>
+
+    // This demo won't run until you configure your app
+
+    // and replace these constants with proper values.
+
+    // Please see the README.md or go to 
+
+    //  
+
+    // for further instructions
+
+    const INTERSTITIAL_PLACEMENT_ID = '';
+
+
+    var watchedInterstitials = 0;
+
+    var preloadedInterstitial = null;
+
+
+    window.onload = function() {
+
+      FBInstant.initializeAsync().then(function() {
+
+        FBInstant.startGameAsync().then(function() {
+
+
+          var supportedAPIs = FBInstant.getSupportedAPIs();
+
+          if (supportedAPIs.includes('getInterstitialAdAsync')){
+
+            //
+
+            // Preload Interstitial
+
+            //
+
+            FBInstant.getInterstitialAdAsync(
+
+              INTERSTITIAL_PLACEMENT_ID, // Your Ad Placement Id
+
+            ).then(function(interstitial) {
+
+              // Load the Ad asynchronously
+
+              preloadedInterstitial = interstitial;
+
+              return preloadedInterstitial.loadAsync();
+
+            }).then(function() {
+
+            // show interstial 
+
+              showInterstitial()
+
+            }).catch(function(err){
+
+              displayError('Interstitial failed to preload: ' + err.message);
+
+            });
+
+
+          } else {
+
+            displayError('Ads not supported in this session');
+
+          }
+
+         
+
+        });
+
+      });
+
+    };
+
+
+    function showInterstitial() {      
+
+      preloadedInterstitial.showAsync()
+
+      .then(function() {
+
+        // Perform post-ad success operation
+
+        displayInterstitialAmount(++watchedInterstitials);        
+
+      })
+
+      .catch(function(e) {
+
+        displayError(e.message);
+
+      });
+
+    }
+
+
+  </script>
+
+  <script src="https://connect.facebook.net/en_US/fbinstant.6.0.js"></script>
+
 
 </head>
 <body ontouchstart="">
@@ -99,8 +193,7 @@
 					<h2 class="gm-menu-subtitle">Every Tap Matters</h2>
 				</div>
 				<button id="newGameBtn" class="gm-btn btn-blue" type="button" name="button">New Game</button>
-				<!-- <button id="highScoresBtn" class="gm-btn" type="button" name="button">Best Score</button> -->
-				<button id="aboutBtn" class="gm-btn" type="button" name="button">About</button>
+				<input type="hidden" id="aboutBtn" class="gm-btn" type="button" name="button"></input>
 			</div>
 		</div>
 
